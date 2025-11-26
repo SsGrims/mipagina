@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>CitrusBar — Prototipo (Mock) Tienda Online</title>
-  <meta name="description" content="Prototipo funcional mock de la tienda CitrusBar: productos, suscripciones, carrito y panel de usuario (sin backend)."> 
+  <meta name="description" content="Tienda CitrusBar: productos, suscripciones, carrito y panel de usuario ."> 
   <style>
     /* === Paleta CitrusBar === */
     :root{
@@ -157,14 +157,14 @@
       <h2>Perfil (simulado)</h2>
       <div class="profile-card">
         <div id="profileBox">
-          <p class="note">No hay usuario conectado (esto es una simulación). Puedes usar el formulario de registro y login para probar la UX.</p>
+          <p class="note">No hay usuario conectado.</p>
         </div>
 
         <div style="margin-top:12px">
           <div class="controls">
-            <button class="btn" id="openRegister">Registro (simulado)</button>
-            <button class="btn secondary" id="openLogin">Login (simulado)</button>
-            <button class="btn" id="simulateOrder">Simular pedido</button>
+            <button class="btn" id="openRegister">Registro </button>
+            <button class="btn secondary" id="openLogin">Login </button>
+            <button class="btn" id="simulateOrder">Pedido</button>
           </div>
         </div>
 
@@ -180,16 +180,16 @@
     </div>
 
     <footer>
-      <p>CitrusBar — Prototipo | Hecho para presentación. No usa base de datos. </p>
+      <p>CitrusBar — Prototipo </p>
     </footer>
   </main>
 
   <script>
     /***** Datos mock *****/
     const PRODUCTS = [
-      {id:'b1', title:'Citrus Original', price:8.50, img:'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=9b3f6e9c6d3f2b9e6b1c9f1a2c4b1f39', desc:'Barra energética a base de bagazo de naranja. Sabor natural.'},
-      {id:'b2', title:'Citrus Miel', price:9.00, img:'https://images.unsplash.com/photo-1528825871115-3581a5387919?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=1f2a3b4c5d6e7f8a9a0b1c2d3e4f5a6b', desc:'Con toque de miel y avena.'},
-      {id:'b3', title:'Citrus Proteína', price:10.50, img:'https://images.unsplash.com/photo-1582386320408-1b32b9a8f2c6?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=abcdabcdabcdabcdabcdabcdabcdabcd', desc:'Enriquecida con proteína vegetal.'}
+      {id:'b1', title:'Citrus Original', price:8.50, img:'natural.jpg', desc:'Barra energética a base de bagazo de naranja. Sabor natural.'},
+      {id:'b2', title:'Citrus Miel', price:9.00, img:'miel.jpg', desc:'Con toque de miel y avena.'},
+      {id:'b3', title:'Citrus Proteína', price:10.50, img:'avena.jpg', desc:'Enriquecida con proteína vegetal.'}
     ];
 
     const PLANS = [
