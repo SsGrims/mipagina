@@ -1,103 +1,372 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CitrusBar - Modelo de Suscripción</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CitrusBar — Prototipo (Mock) Tienda Online</title>
+  <meta name="description" content="Prototipo funcional mock de la tienda CitrusBar: productos, suscripciones, carrito y panel de usuario (sin backend)."> 
+  <style>
+    /* === Paleta CitrusBar === */
+    :root{
+      --orange:#ff7a1a; /* cítrico */
+      --green:#2f9e44;
+      --cream:#fff7ea;
+      --rose:#d1478c; /* opcional */
+      --muted:#6b6b6b;
+      --card:#fff8d9;
+      --glass: rgba(255,255,255,0.75);
+    }
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #fafafa;
-            color: #222;
-        }
+    *{box-sizing:border-box}
+    body{font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; margin:0; background:linear-gradient(180deg,var(--cream),#fff); color:#222}
+    header{background:var(--orange); color:white; padding:18px 20px; display:flex; align-items:center; gap:14px}
+    .logo{font-weight:800; font-size:20px}
+    nav{margin-left:auto; display:flex; gap:8px; align-items:center}
+    nav a{color:white; text-decoration:none; padding:8px 10px; border-radius:8px; font-weight:600}
+    nav a:hover{background:rgba(255,255,255,0.12)}
+    .badge{background:rgba(0,0,0,0.08); padding:6px 10px; border-radius:10px; font-size:14px}
 
-        header {
-            background: #d1478c;
-            padding: 25px;
-            text-align: center;
-            color: white;
-            font-size: 28px;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
+    .container{max-width:1100px; margin:28px auto; padding:0 16px}
 
-        .container {
-            width: 90%;
-            max-width: 1100px;
-            margin: 40px auto;
-            display: flex;
-            gap: 30px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
+    .hero{display:flex; gap:20px; align-items:center; background:var(--card); padding:22px; border-radius:18px; box-shadow:0 6px 20px rgba(0,0,0,0.06)}
+    .hero img{width:160px; border-radius:12px}
+    .hero h1{margin:0; color:var(--orange)}
+    .hero p{margin:8px 0 0; color:var(--muted)}
 
-        .card {
-            background: #fff8d9;
-            padding: 25px;
-            border-radius: 18px;
-            width: 450px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
+    /* productos grid */
+    .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px; margin-top:22px}
+    .card{background:white; border-radius:12px; padding:14px; box-shadow:0 6px 18px rgba(0,0,0,0.06)}
+    .card img{width:100%; height:150px; object-fit:cover; border-radius:8px}
+    .card h3{margin:10px 0 6px}
+    .price{font-weight:700; color:var(--green)}
+    .btn{display:inline-block; background:var(--orange); color:white; padding:8px 12px; border-radius:10px; text-decoration:none; cursor:pointer; border:none}
+    .btn.secondary{background:transparent; color:var(--orange); border:2px solid var(--orange)}
 
-        .card-title {
-            background: #d1478c;
-            color: white;
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 20px;
-            text-align: center;
-            font-weight: bold;
-            margin-top: -40px;
-            margin-bottom: 25px;
-        }
+    /* carrito modal */
+    .cart-btn{position:relative}
+    .cart-count{position:absolute; top:-6px; right:-6px; background:var(--green); color:white; font-size:12px; width:22px; height:22px; display:flex; align-items:center; justify-content:center; border-radius:50%}
 
-        ul {
-            font-size: 17px;
-            line-height: 1.7em;
-        }
+    /* secciones hidden */
+    section{display:none}
+    section.active{display:block}
 
-        b {
-            font-weight: 700;
-        }
-    </style>
+    /* forms */
+    form{display:flex; flex-direction:column; gap:10px}
+    input, select{padding:10px; border-radius:8px; border:1px solid #eee}
+
+    footer{margin:40px 0; text-align:center; color:var(--muted)}
+
+    /* responsive nav compact */
+    @media(max-width:720px){
+      .hero{flex-direction:column; text-align:center}
+      nav{display:none}
+      header .menu-toggle{display:block; margin-left:auto; background:transparent; border:none; color:white}
+    }
+
+    /* small helpers */
+    .row{display:flex; gap:12px; align-items:center}
+    .pill{background:var(--glass); padding:6px 12px; border-radius:999px}
+    .note{font-size:14px; color:var(--muted)}
+
+    /* perfil cards */
+    .profile-card{background:linear-gradient(180deg, #fff, #fffdf8); padding:18px; border-radius:12px}
+    .controls{display:flex; gap:8px; flex-wrap:wrap}
+
+    /* modal simple */
+    .modal-backdrop{position:fixed; inset:0; background:rgba(0,0,0,0.4); display:none; align-items:center; justify-content:center}
+    .modal{background:white; padding:20px; border-radius:10px; width:90%; max-width:520px}
+    .show{display:flex}
+  </style>
 </head>
-
 <body>
+  <header>
+    <div class="logo">CitrusBar</div>
+    <div class="pill">Barra natural — bagazo de naranja</div>
+    <nav id="mainNav">
+      <a href="#" data-link="home">Inicio</a>
+      <a href="#" data-link="productos">Productos</a>
+      <a href="#" data-link="suscripciones">Suscripciones</a>
+      <a href="#" data-link="carrito">Carrito</a>
+      <a href="#" data-link="perfil">Perfil</a>
+    </nav>
+    <button class="cart-btn btn" id="cartOpen">Carrito <span class="cart-count" id="cartCount">0</span></button>
+  </header>
 
-    <header>
-        CitrusBar – Modelo de Suscripción y Funcionalidades del Servicio
-    </header>
+  <main class="container">
 
-    <div class="container">
+    <!-- HOME -->
+    <section id="home" class="active">
+      <div class="hero">
+        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='200'><rect width='100%' height='100%' fill='%23fff8d9'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='22' fill='%23ff7a1a'>CitrusBar</text></svg>" alt="CitrusBar">
+        <div>
+          <h1>Prototipo de tienda — CitrusBar</h1>
+          <p class="note">Muestra interactiva de la tienda online: productos, planes de suscripción y panel del usuario. <strong>Simulación sin backend</strong>.</p>
+          <div style="margin-top:12px" class="row">
+            <button class="btn" data-link-to="productos">Ver Productos</button>
+            <button class="btn secondary" data-link-to="suscripciones">Ver Suscripciones</button>
+          </div>
+        </div>
+      </div>
 
-        <!-- Card 1 -->
+      <h2 style="margin-top:22px">Lo que puedes mostrar al cliente</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:12px">
         <div class="card">
-            <div class="card-title">ESTRUCTURA DEL MODELO DE SUSCRIPCIÓN</div>
-            <ul>
-                <li><b>Planes disponibles:</b> semanal, quincenal, mensual</li>
-                <li>Cargo automático recurrente</li>
-                <li>Beneficios: menor precio, prioridad en entregas, recompensas</li>
-                <li>Panel para gestionar suscripción: pausar/cancelar</li>
-                <li>Historial de pedidos y próximos envíos</li>
-            </ul>
+          <h3>Experiencia de compra</h3>
+          <p class="note">Agregar productos al carrito, revisar y simular pago.</p>
+        </div>
+        <div class="card">
+          <h3>Planes de suscripción</h3>
+          <p class="note">Semanal / Quincenal / Mensual con gestión desde el panel.</p>
+        </div>
+        <div class="card">
+          <h3>Panel del usuario</h3>
+          <p class="note">Ver historial (simulado), pausar o cancelar suscripción.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUCTOS -->
+    <section id="productos">
+      <h2>Productos</h2>
+      <p class="note">Lista de barras disponibles. Puedes añadir al carrito para simular una compra.</p>
+      <div class="grid" id="productGrid">
+        <!-- cards generadas por JS -->
+      </div>
+    </section>
+
+    <!-- SUSCRIPCIONES -->
+    <section id="suscripciones">
+      <h2>Planes de Suscripción</h2>
+      <p class="note">Escoge un plan y simula la activación. Posteriormente podrás pausar o cancelar desde "Perfil".</p>
+      <div class="grid" id="plansGrid">
+        <!-- planes generados por JS -->
+      </div>
+    </section>
+
+    <!-- CARRITO -->
+    <section id="carrito">
+      <h2>Carrito</h2>
+      <div id="cartArea" class="card">
+        <!-- detalle del carrito por JS -->
+        <p class="note">Tu carrito está vacío.</p>
+      </div>
+    </section>
+
+    <!-- PERFIL -->
+    <section id="perfil">
+      <h2>Perfil (simulado)</h2>
+      <div class="profile-card">
+        <div id="profileBox">
+          <p class="note">No hay usuario conectado (esto es una simulación). Puedes usar el formulario de registro y login para probar la UX.</p>
         </div>
 
-        <!-- Card 2 -->
-        <div class="card">
-            <div class="card-title">FUNCIONALIDADES DEL SERVICIO</div>
-            <ul>
-                <li>Registro de usuario y creación de perfil</li>
-                <li>Selección de productos y planes de suscripción</li>
-                <li>Carrito de compra y pasarela de pago</li>
-                <li>Panel del usuario: pausar, reprogramar, cancelar</li>
-                <li>Notificaciones automáticas y confirmación de pedido</li>
-            </ul>
+        <div style="margin-top:12px">
+          <div class="controls">
+            <button class="btn" id="openRegister">Registro (simulado)</button>
+            <button class="btn secondary" id="openLogin">Login (simulado)</button>
+            <button class="btn" id="simulateOrder">Simular pedido</button>
+          </div>
         </div>
 
+        <div style="margin-top:12px" id="subscriptionControls" class="note"></div>
+      </div>
+    </section>
+
+    <!-- LOGIN / REGISTER modals (simulados) -->
+    <div id="modalBackdrop" class="modal-backdrop">
+      <div class="modal" id="modalContent">
+        <!-- contenido por JS -->
+      </div>
     </div>
 
+    <footer>
+      <p>CitrusBar — Prototipo | Hecho para presentación. No usa base de datos. </p>
+    </footer>
+  </main>
+
+  <script>
+    /***** Datos mock *****/
+    const PRODUCTS = [
+      {id:'b1', title:'Citrus Original', price:8.50, img:'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=9b3f6e9c6d3f2b9e6b1c9f1a2c4b1f39', desc:'Barra energética a base de bagazo de naranja. Sabor natural.'},
+      {id:'b2', title:'Citrus Miel', price:9.00, img:'https://images.unsplash.com/photo-1528825871115-3581a5387919?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=1f2a3b4c5d6e7f8a9a0b1c2d3e4f5a6b', desc:'Con toque de miel y avena.'},
+      {id:'b3', title:'Citrus Proteína', price:10.50, img:'https://images.unsplash.com/photo-1582386320408-1b32b9a8f2c6?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=abcdabcdabcdabcdabcdabcdabcdabcd', desc:'Enriquecida con proteína vegetal.'}
+    ];
+
+    const PLANS = [
+      {id:'p-w', name:'Semanal', price:25.00, freq:'1 semana', perks:['Descuento 10%','Entrega prioritaria']},
+      {id:'p-q', name:'Quincenal', price:45.00, freq:'2 semanas', perks:['Descuento 12%','Envío gratuito']},
+      {id:'p-m', name:'Mensual', price:85.00, freq:'1 mes', perks:['Descuento 15%','Regalo sorpresa']}
+    ];
+
+    /***** Estado local (simulado con localStorage) *****/
+    const state = {
+      cart: JSON.parse(localStorage.getItem('cb_cart')||'[]'),
+      user: JSON.parse(localStorage.getItem('cb_user')||'null'),
+      subscription: JSON.parse(localStorage.getItem('cb_sub')||'null')
+    };
+
+    function saveState(){
+      localStorage.setItem('cb_cart', JSON.stringify(state.cart));
+      localStorage.setItem('cb_user', JSON.stringify(state.user));
+      localStorage.setItem('cb_sub', JSON.stringify(state.subscription));
+      renderCartCount();
+    }
+
+    /* === Navegación entre secciones (simula múltiples páginas) === */
+    document.querySelectorAll('[data-link]').forEach(a=>a.addEventListener('click', (e)=>{ e.preventDefault(); const to=a.dataset.link; showSection(to)}));
+    document.querySelectorAll('[data-link-to]').forEach(b=>b.addEventListener('click', ()=> showSection(b.dataset.linkTo)));
+
+    function showSection(id){
+      document.querySelectorAll('main section').forEach(s=>s.classList.remove('active'));
+      const el = document.getElementById(id);
+      if(el) el.classList.add('active');
+      window.scrollTo({top:0,behavior:'smooth'});
+      if(id==='productos') renderProducts();
+      if(id==='suscripciones') renderPlans();
+      if(id==='carrito') renderCart();
+      if(id==='perfil') renderProfile();
+    }
+
+    /* === Productos === */
+    function renderProducts(){
+      const grid = document.getElementById('productGrid'); grid.innerHTML='';
+      PRODUCTS.forEach(p=>{
+        const div = document.createElement('div'); div.className='card';
+        div.innerHTML = `
+          <img src="${p.img}" alt="${p.title}">
+          <h3>${p.title}</h3>
+          <p class="note">${p.desc}</p>
+          <div class="row" style="margin-top:10px; justify-content:space-between; align-items:center">
+            <div><span class="price">S/ ${p.price.toFixed(2)}</span></div>
+            <div>
+              <button class="btn" onclick="addToCart('${p.id}')">Agregar</button>
+              <button class="btn secondary" onclick="openQuickView('${p.id}')">Ver</button>
+            </div>
+          </div>`;
+        grid.appendChild(div);
+      })
+    }
+
+    function addToCart(id){
+      const prod = PRODUCTS.find(x=>x.id===id); if(!prod) return;
+      const item = state.cart.find(x=>x.id===id);
+      if(item) item.qty++;
+      else state.cart.push({id, title:prod.title, price:prod.price, qty:1});
+      saveState();
+      notify('Producto agregado al carrito');
+    }
+
+    function openQuickView(id){
+      const p = PRODUCTS.find(x=>x.id===id);
+      showModal(`<h3>${p.title}</h3><p class='note'>${p.desc}</p><p class='price'>S/ ${p.price.toFixed(2)}</p><div style='margin-top:12px' class='row'><button class='btn' onclick="addToCart('${p.id}'); closeModal();">Agregar al carrito</button> <button class='btn secondary' onclick='closeModal()'>Cerrar</button></div>`);
+    }
+
+    /* === Plans === */
+    function renderPlans(){
+      const grid = document.getElementById('plansGrid'); grid.innerHTML='';
+      PLANS.forEach(p=>{
+        const card = document.createElement('div'); card.className='card';
+        card.innerHTML = `<h3>${p.name}</h3><p class='note'>${p.freq}</p><p class='price'>S/ ${p.price.toFixed(2)}</p><ul>${p.perks.map(r=>`<li>${r}</li>`).join('')}</ul><div style='margin-top:10px' class='row'><button class='btn' onclick="subscribe('${p.id}')">Suscribirme</button><button class='btn secondary' onclick="openPlanInfo('${p.id}')">Info</button></div>`;
+        grid.appendChild(card);
+      })
+    }
+
+    function subscribe(planId){
+      const plan = PLANS.find(p=>p.id===planId);
+      if(!plan) return;
+      state.subscription = {id:plan.id, name:plan.name, price:plan.price, active:true, startedAt: new Date().toISOString()};
+      saveState();
+      notify(`Suscripción ${plan.name} activada (simulada)`);
+      showSection('perfil');
+    }
+
+    function openPlanInfo(id){
+      const p = PLANS.find(x=>x.id===id);
+      showModal(`<h3>${p.name}</h3><p class='note'>${p.freq}</p><p class='price'>S/ ${p.price.toFixed(2)}</p><ul>${p.perks.map(r=>`<li>${r}</li>`).join('')}</ul><div style='margin-top:12px' class='row'><button class='btn' onclick="subscribe('${p.id}'); closeModal();">Suscribirme</button> <button class='btn secondary' onclick='closeModal()'>Cerrar</button></div>`);
+    }
+
+    /* === Carrito === */
+    function renderCart(){
+      const area = document.getElementById('cartArea');
+      if(state.cart.length===0){ area.innerHTML = '<p class="note">Tu carrito está vacío.</p>'; return}
+      let html = '<table style="width:100%"><thead><tr><th>Producto</th><th>Cantidad</th><th>Precio</th><th></th></tr></thead><tbody>';
+      let total=0;
+      state.cart.forEach(item=>{ total += item.qty*item.price; html += `<tr><td>${item.title}</td><td>${item.qty}</td><td>S/ ${(item.price*item.qty).toFixed(2)}</td><td><button class='btn secondary' onclick="removeFromCart('${item.id}')">-</button></td></tr>`});
+      html += `</tbody></table><div style='margin-top:12px' class='row' ><div><strong>Total: S/ ${total.toFixed(2)}</strong></div><div style='margin-left:auto'><button class='btn' onclick='simulateCheckout()'>Simular pago</button> <button class='btn secondary' onclick='clearCart()'>Vaciar</button></div></div>`;
+      area.innerHTML = html;
+    }
+
+    function removeFromCart(id){
+      const item = state.cart.find(x=>x.id===id); if(!item) return; item.qty--; if(item.qty<=0) state.cart = state.cart.filter(x=>x.id!==id); saveState(); renderCart(); }
+    function clearCart(){ state.cart = []; saveState(); renderCart(); notify('Carrito vaciado'); }
+
+    function simulateCheckout(){
+      if(state.cart.length===0){ notify('El carrito está vacío'); return }
+      // Simular confirmación de pedido
+      const order = {id:'MOCK-'+Date.now(), items:state.cart, total: state.cart.reduce((s,i)=>s+i.qty*i.price,0), createdAt:new Date().toISOString()};
+      // Opcional: guardar en user mock
+      if(!state.user) state.user = {name:'Cliente (simulado)'};
+      state.cart = []; saveState(); renderCart(); notify(`Pedido simulado: ${order.id}`);
+    }
+
+    /* === Perfil / Suscripción controls === */
+    function renderProfile(){
+      const box = document.getElementById('profileBox');
+      if(!state.user){ box.innerHTML = `<p class='note'>No hay usuario conectado (simulación). Puedes registrarte o iniciar sesión.</p>`; }
+      else{
+        box.innerHTML = `<p><strong>${state.user.name}</strong></p><p class='note'>Email: ${state.user.email||'no registrado'}</p>`;
+      }
+
+      const ctrl = document.getElementById('subscriptionControls');
+      if(state.subscription && state.subscription.active){
+        ctrl.innerHTML = `<div><strong>Suscripción activa:</strong> ${state.subscription.name} — Inicio: ${new Date(state.subscription.startedAt).toLocaleDateString()}</div><div style='margin-top:8px' class='controls'><button class='btn' onclick='pauseSubscription()'>Pausar</button><button class='btn secondary' onclick='cancelSubscription()'>Cancelar</button></div>`;
+      } else ctrl.innerHTML = '<div class="note">No tienes suscripciones activas.</div>';
+    }
+
+    function pauseSubscription(){ if(!state.subscription){ notify('No hay suscripción'); return } state.subscription.active = false; saveState(); renderProfile(); notify('Suscripción pausada (simulada)'); }
+    function cancelSubscription(){ if(!state.subscription){ notify('No hay suscripción'); return } state.subscription = null; saveState(); renderProfile(); notify('Suscripción cancelada (simulada)'); }
+
+    /* === Registro / Login simulado === */
+    document.getElementById('openRegister').addEventListener('click', ()=> openRegisterForm());
+    document.getElementById('openLogin').addEventListener('click', ()=> openLoginForm());
+
+    function openRegisterForm(){
+      showModal(`<h3>Registro (simulado)</h3><form onsubmit="event.preventDefault(); registerUser();"><input required placeholder='Nombre' id='regName'><input required placeholder='Email' id='regEmail' type='email'><div style='margin-top:8px' class='row'><button class='btn' type='submit'>Crear cuenta</button><button class='btn secondary' type='button' onclick='closeModal()'>Cancelar</button></div></form>`)
+    }
+    function registerUser(){ const name = document.getElementById('regName').value; const email = document.getElementById('regEmail').value; state.user = {name,email}; saveState(); closeModal(); renderProfile(); notify('Cuenta creada (simulada)'); }
+
+    function openLoginForm(){ showModal(`<h3>Login (simulado)</h3><form onsubmit="event.preventDefault(); loginUser();"><input required placeholder='Email' id='logEmail'><div style='margin-top:8px' class='row'><button class='btn' type='submit'>Entrar</button><button class='btn secondary' type='button' onclick='closeModal()'>Cancelar</button></div></form>`)}
+    function loginUser(){ const email=document.getElementById('logEmail').value; state.user = {name:'Cliente (simulado)', email}; saveState(); closeModal(); renderProfile(); notify('Sesión iniciada (simulada)'); }
+
+    /* === Modal helpers === */
+    const backdrop = document.getElementById('modalBackdrop');
+    function showModal(html){ document.getElementById('modalContent').innerHTML = html; backdrop.classList.add('show'); }
+    function closeModal(){ backdrop.classList.remove('show'); }
+    backdrop.addEventListener('click', (e)=>{ if(e.target===backdrop) closeModal(); });
+
+    /* === Notifications simples === */
+    function notify(msg){
+      const n = document.createElement('div'); n.style.position='fixed'; n.style.bottom='18px'; n.style.left='18px'; n.style.background='white'; n.style.padding='12px 14px'; n.style.borderRadius='10px'; n.style.boxShadow='0 8px 22px rgba(0,0,0,0.12)'; n.innerText = msg; document.body.appendChild(n);
+      setTimeout(()=>{ n.style.transition='opacity 400ms'; n.style.opacity=0; setTimeout(()=>n.remove(),400)},2200);
+    }
+
+    /* === Quick cart count / UI wiring === */
+    function renderCartCount(){ document.getElementById('cartCount').innerText = state.cart.reduce((s,i)=>s+i.qty,0); }
+    document.getElementById('cartOpen').addEventListener('click', ()=> showSection('carrito'));
+
+    // init
+    renderCartCount();
+    renderProfile();
+
+    // wire nav links
+    document.querySelectorAll('nav a').forEach(a=> a.addEventListener('click', (e)=>{ e.preventDefault(); showSection(a.dataset.link) }));
+
+    // small helpers for sample actions
+    document.getElementById('simulateOrder').addEventListener('click', ()=> { addToCart(PRODUCTS[0].id); simulateCheckout(); });
+
+    // make sections accessible via hash (optional)
+    if(location.hash){ const h = location.hash.replace('#',''); if(document.getElementById(h)) showSection(h); }
+
+  </script>
 </body>
 </html>
